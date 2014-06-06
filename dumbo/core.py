@@ -320,7 +320,7 @@ def run(mapper,
                     clsname = record.split('.')[-1]
                     modname = '.'.join(record.split('.')[:-1])
                     if not modname:
-                        raise ImportError(parser)
+                        raise ImportError(record)
                     module = __import__(modname, fromlist=[clsname])
                     set = getattr(module, clsname)().set
                     outputs = itermap(inputs, mapper, lambda v: set(*v))
@@ -402,7 +402,7 @@ def run(mapper,
                 if redclose:
                     redclose()
             else:
-                for output in dumpcode(inputs):
+                for output in dumpcode(input):
                     print '\t'.join(output)
     else:
         opts = Options(opts)
