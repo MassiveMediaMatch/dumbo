@@ -4,3 +4,6 @@ python:
   - "2.7"
 # command to run tests
 script: nosetests
+# Custom install procedure for test dependencies
+install:
+- pip install python-cdb
