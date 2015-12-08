@@ -54,7 +54,7 @@ class StreamingIteration(Iteration):
         if os.path.exists(self.prog):
             opts.add('file', self.prog)
 
-        keys = ['hadoop', 'name', 'delinputs', 'libegg', 'libjar',
+        keys = ['hadoop', 'name', 'preoutputs', 'delinputs', 'libegg', 'libjar',
             'inputformat', 'outputformat', 'nummaptasks', 'numreducetasks',
             'priority', 'queue', 'cachefile', 'cachearchive', 'file',
             'codewritable', 'addpath', 'getpath', 'python', 'streamoutput',
