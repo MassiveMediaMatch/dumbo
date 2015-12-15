@@ -58,6 +58,12 @@ def dumbo():
         retval = doctest(sys.argv[2])
     elif sys.argv[1].endswith('.py'):
         retval = start(sys.argv[1], parseargs(sys.argv[1:]))
+    elif sys.argv[1] == 'version':
+        import pkg_resources
+        project = 'dumbo'
+        version = pkg_resources.require(project)[0].version
+        print project, version
+        return 1
     else:
         print >> sys.stderr, 'ERROR: unknown dumbo command:', sys.argv[1]
         retval = 1
