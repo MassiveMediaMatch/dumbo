@@ -19,6 +19,7 @@ import os
 import re
 import subprocess
 import warnings
+import logging
 from collections import defaultdict
 
 def sorted(iterable, piecesize=None, key=None, reverse=False):
@@ -243,6 +244,7 @@ def execute(cmd,
             printcmd=True,
             stdout=sys.stdout,
             stderr=sys.stderr):
+    base_cmd = cmd
     if precmd:
         cmd = ' '.join((precmd, cmd))
     opts = opts or Options()
@@ -251,6 +253,7 @@ def execute(cmd,
         cmd = ' '.join((cmd, args))
     if printcmd:
         print >> stderr, 'EXEC:', cmd
+    logging.getLogger('dumbo.util.execute').info('Executing command {b!r} (full: {c!r})'.format(b=base_cmd, c=cmd))
     return system(cmd, stdout, stderr)
 
 
@@ -355,3 +358,10 @@ def loadclassname(name):
     modname, _, clsname = name.rpartition(".")
     mod = __import__(modname, fromlist=[clsname])
     return getattr(mod, clsname)
+
+
+def describe(obj):
+    try:
+        return '{m}.{n}'.format(m=obj.__module__, n=obj.__name__)
+    except Exception:
+        return repr(obj)

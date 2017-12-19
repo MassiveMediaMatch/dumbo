@@ -185,6 +185,9 @@ class Program(object):
 
 def main(runner, starter=None, variator=None):
     opts = parseargs(sys.argv[1:])
+    logging.getLogger('dumbo').info('dumbo.core.main({r}, {s}, {v}) with {o!r}'.format(
+        r=describe(runner), s=describe(starter), v=describe(variator), o=opts)
+    )
     starteropt = opts.pop('starter')
     opts.add('starter', 'no')
     if starter and 'no' not in starteropt and \
