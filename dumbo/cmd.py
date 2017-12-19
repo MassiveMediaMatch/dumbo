@@ -16,6 +16,8 @@
 
 import sys
 import os
+import logging
+import socket
 
 from dumbo.util import (dumpcode, Options, loadcode, dumptext, loadtext,
     configopts, parseargs, execute, envdef)
@@ -23,6 +25,19 @@ from dumbo.backends import create_filesystem
 
 
 def dumbo():
+
+    # Set up dumbo specific logging based on current dumbo config.
+    logging.basicConfig(**dict(configopts('logging')))
+    # Log process and environment information for debugging purposes.
+    logging.getLogger('dumbo.cmd').debug('This is {d!r}'.format(d={
+        "hostname": socket.gethostname(),
+        "pid": os.getpid(),
+        "cwd": os.getcwd(),
+        "sys.argv": sys.argv,
+        "sys.path": sys.path,
+        "os.environ": os.environ,
+    }))
+
     if len(sys.argv) < 2:
         print 'Usages:'
         print '  dumbo start <python program> [<options>]'
