@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'dumbo',
-    version = '0.21.38-mm',
+    version = '0.21.39-mm',
     author = 'Klaas Bosteels',
     license = 'Apache Software License (ASF)',
     packages = find_packages(),
