@@ -59,8 +59,7 @@ def dumbo():
     elif sys.argv[1].endswith('.py'):
         retval = start(sys.argv[1], parseargs(sys.argv[1:]))
     elif sys.argv[1] in ('version', '-v', '--version'):
-        print '{d} (using {t})'.format(d=version('dumbo'), t=version('typedbytes'))
-        return 1
+        retval = version()
     else:
         print >> sys.stderr, 'ERROR: unknown dumbo command:', sys.argv[1]
         retval = 1
@@ -182,10 +181,21 @@ def doctest(prog):
     return int(failures > 0)
 
 
-def version(project='dumbo'):
-    import pkg_resources
-    version = pkg_resources.require(project)[0].version
-    return '{p} {v}'.format(p=project, v=version)
+def version():
+    def get_version(project):
+        try:
+            import pkg_resources
+            version = pkg_resources.require(project)[0].version
+            return '{p} {v}'.format(p=project, v=version)
+        except pkg_resources.DistributionNotFound:
+            return '{p} not available'.format(p=project)
+
+    print '{d} (with: {t}, {c})'.format(
+        d=get_version('dumbo'),
+        t=get_version('typedbytes'),
+        c=get_version('ctypedbytes'),
+    )
+    return 0
 
 
 if __name__ == '__main__':
