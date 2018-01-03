@@ -227,7 +227,10 @@ def configopts(section, prog=None, opts=None):
     for (key, value) in opts or Options():
         defaults[key.lower()] = value
     parser = SafeConfigParser(defaults)
-    parser.read(['/etc/dumbo.conf', os.environ['HOME'] + '/.dumborc'])
+    parser.read([
+        os.environ.get('DUMBOCONFIG', '/etc/dumbo.conf'),
+        os.environ['HOME'] + '/.dumborc'],
+    )
     (results, excludes) = ([], set(defaults.iterkeys()))
     try:
         for (key, value) in parser.items(section):
