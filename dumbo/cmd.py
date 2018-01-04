@@ -18,7 +18,7 @@ import sys
 import os
 
 from dumbo.util import (dumpcode, Options, loadcode, dumptext, loadtext,
-    configopts, parseargs, execute, envdef)
+                        configopts, parseargs, execute, envdef, getconfigparser)
 from dumbo.backends import create_filesystem
 
 
@@ -35,6 +35,8 @@ def dumbo():
         print '  dumbo encodepipe [<options>]'
         print '  dumbo decodepipe [<options>]'
         print '  dumbo doctest <python program>'
+        print '  dumbo version'
+        print '  dumbo configdump'
         return 1
     if sys.argv[1] == 'start':
         retval = start(sys.argv[2], parseargs(sys.argv[2:]))
@@ -60,6 +62,8 @@ def dumbo():
         retval = start(sys.argv[1], parseargs(sys.argv[1:]))
     elif sys.argv[1] in ('version', '-v', '--version'):
         retval = version()
+    elif sys.argv[1] == 'configdump':
+        retval = config_dump()
     else:
         print >> sys.stderr, 'ERROR: unknown dumbo command:', sys.argv[1]
         retval = 1
@@ -195,6 +199,12 @@ def version():
         t=get_version('typedbytes'),
         c=get_version('ctypedbytes'),
     )
+    return 0
+
+
+def config_dump():
+    parser = getconfigparser()
+    parser.write(sys.stdout)
     return 0
 
 

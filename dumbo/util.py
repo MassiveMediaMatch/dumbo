@@ -211,8 +211,9 @@ def getopt(opts, key, delete=True):
         o.remove(key)
     return values
 
+
 def configopts(section, prog=None, opts=None):
-    from ConfigParser import SafeConfigParser, NoSectionError
+    from ConfigParser import NoSectionError
     if prog:
         prog = prog.split('/')[-1]
         prog = prog[:-3] if prog.endswith('.py') else prog
@@ -226,11 +227,7 @@ def configopts(section, prog=None, opts=None):
         pass
     for (key, value) in opts or Options():
         defaults[key.lower()] = value
-    parser = SafeConfigParser(defaults)
-    parser.read([
-        os.environ.get('DUMBOCONFIG', '/etc/dumbo.conf'),
-        os.environ['HOME'] + '/.dumborc'],
-    )
+    parser = getconfigparser(defaults)
     (results, excludes) = ([], set(defaults.iterkeys()))
     try:
         for (key, value) in parser.items(section):
@@ -239,6 +236,16 @@ def configopts(section, prog=None, opts=None):
     except NoSectionError:
         pass
     return results
+
+
+def getconfigparser(defaults=None):
+    from ConfigParser import SafeConfigParser
+    parser = SafeConfigParser(defaults)
+    parser.read([
+        os.environ.get('DUMBOCONFIG', '/etc/dumbo.conf'),
+        os.environ['HOME'] + '/.dumborc'],
+    )
+    return parser
 
 
 def execute(cmd,
