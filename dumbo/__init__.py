@@ -29,7 +29,7 @@ from dumbo.decor import *
 def execute_and_exit():
     import sys
     from dumbo.cmd import dumbo
-    sys.exit(dumbo())
+    sys.exit(dumbo(sys.argv))
 
 
 if __name__ == '__main__':

@@ -22,8 +22,8 @@ from dumbo.util import (dumpcode, Options, loadcode, dumptext, loadtext,
 from dumbo.backends import create_filesystem
 
 
-def dumbo():
-    if len(sys.argv) < 2:
+def dumbo(argv=sys.argv):
+    if len(argv) < 2:
         print 'Usages:'
         print '  dumbo start <python program> [<options>]'
         print '  dumbo cat <path> [<options>]'
@@ -38,34 +38,34 @@ def dumbo():
         print '  dumbo version'
         print '  dumbo configdump'
         return 1
-    if sys.argv[1] == 'start':
-        retval = start(sys.argv[2], parseargs(sys.argv[2:]))
-    elif sys.argv[1] == 'cat':
-        retval = cat(sys.argv[2], parseargs(sys.argv[2:]))
-    elif sys.argv[1] == 'ls':
-        retval = ls(sys.argv[2], parseargs(sys.argv[2:]))
-    elif sys.argv[1] == 'exists':
-        retval = exists(sys.argv[2], parseargs(sys.argv[2:]))
-    elif sys.argv[1] == 'rm':
-        retval = rm(sys.argv[2], parseargs(sys.argv[2:]))
-    elif sys.argv[1] == 'put':
-        retval = put(sys.argv[2], sys.argv[3], parseargs(sys.argv[3:]))
-    elif sys.argv[1] == 'get':
-        retval = get(sys.argv[2], sys.argv[3], parseargs(sys.argv[3:]))
-    elif sys.argv[1] == 'encodepipe':
-        retval = encodepipe(parseargs(sys.argv[2:]))
-    elif sys.argv[1] == 'decodepipe':
-        retval = decodepipe(parseargs(sys.argv[2:]))
-    elif sys.argv[1] == 'doctest':
-        retval = doctest(sys.argv[2])
-    elif sys.argv[1].endswith('.py'):
-        retval = start(sys.argv[1], parseargs(sys.argv[1:]))
-    elif sys.argv[1] in ('version', '-v', '--version'):
+    if argv[1] == 'start':
+        retval = start(argv[2], parseargs(argv[2:]))
+    elif argv[1] == 'cat':
+        retval = cat(argv[2], parseargs(argv[2:]))
+    elif argv[1] == 'ls':
+        retval = ls(argv[2], parseargs(argv[2:]))
+    elif argv[1] == 'exists':
+        retval = exists(argv[2], parseargs(argv[2:]))
+    elif argv[1] == 'rm':
+        retval = rm(argv[2], parseargs(argv[2:]))
+    elif argv[1] == 'put':
+        retval = put(argv[2], argv[3], parseargs(argv[3:]))
+    elif argv[1] == 'get':
+        retval = get(argv[2], argv[3], parseargs(argv[3:]))
+    elif argv[1] == 'encodepipe':
+        retval = encodepipe(parseargs(argv[2:]))
+    elif argv[1] == 'decodepipe':
+        retval = decodepipe(parseargs(argv[2:]))
+    elif argv[1] == 'doctest':
+        retval = doctest(argv[2])
+    elif argv[1].endswith('.py'):
+        retval = start(argv[1], parseargs(argv[1:]))
+    elif argv[1] in ('version', '-v', '--version'):
         retval = version()
-    elif sys.argv[1] == 'configdump':
+    elif argv[1] == 'configdump':
         retval = config_dump()
     else:
-        print >> sys.stderr, 'ERROR: unknown dumbo command:', sys.argv[1]
+        print >> sys.stderr, 'ERROR: unknown dumbo command:', argv[1]
         retval = 1
     return retval
 
@@ -209,4 +209,4 @@ def config_dump():
 
 
 if __name__ == '__main__':
-    sys.exit(dumbo())
+    sys.exit(dumbo(sys.argv))
