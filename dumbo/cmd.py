@@ -16,6 +16,7 @@
 
 import sys
 import os
+import platform
 
 from dumbo.util import (dumpcode, Options, loadcode, dumptext, loadtext,
                         configopts, parseargs, execute, envdef, getconfigparser)
@@ -61,7 +62,8 @@ def dumbo(argv=sys.argv):
     elif argv[1].endswith('.py'):
         retval = start(argv[1], parseargs(argv[1:]))
     elif argv[1] in ('version', '-v', '--version'):
-        retval = version()
+        print version()
+        return 0
     elif argv[1] == 'configdump':
         retval = config_dump()
     else:
@@ -194,12 +196,13 @@ def version():
         except pkg_resources.DistributionNotFound:
             return '{p} not available'.format(p=project)
 
-    print '{d} (with: {t}, {c})'.format(
+    return '{d} with {t}, {c} on Python {v} ({e})'.format(
         d=get_version('dumbo'),
         t=get_version('typedbytes'),
         c=get_version('ctypedbytes'),
+        v=platform.python_version(),
+        e=sys.executable,
     )
-    return 0
 
 
 def config_dump():
