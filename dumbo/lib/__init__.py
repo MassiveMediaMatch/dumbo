@@ -22,6 +22,7 @@ from math import sqrt
 from copy import copy
 
 from dumbo.util import loadclassname, Options
+from dumbo.core import get_mapper
 
 
 def identitymapper(key, value):
@@ -102,14 +103,9 @@ class MultiMapper(object):
         self.opts = Options([("addpath", "iter")])
 
     def configure(self):
-        mrbase_class = loadclassname(os.environ['dumbo_mrbase_class'])
         mappers, closefuncs = [], []
         for pattern, mapper in self.mappers:
-            if type(mapper) in (types.ClassType, type):
-                mappercls = type('DumboMapper', (mapper, mrbase_class), {})
-                mapper = mappercls()
-                if hasattr(mappercls, 'map'):
-                    mapper = mapper.map
+            mapper = get_mapper(mapper)
             if hasattr(mapper, 'configure'):
                 mapper.configure()
             if hasattr(mapper, 'close'):
@@ -158,13 +154,8 @@ class JoinMapper(object):
         self.closefunc = None
 
     def configure(self):
-        mrbase_class = loadclassname(os.environ['dumbo_mrbase_class'])
         mapper = self.mapper
-        if type(mapper) in (types.ClassType, type):
-            mappercls = type('DumboMapper', (mapper, mrbase_class), {})
-            mapper = mappercls()
-            if hasattr(mapper, 'map'):
-                mapper = mapper.map
+        mapper = get_mapper(mapper)
         if hasattr(mapper, 'configure'):
             mapper.configure()
         if hasattr(mapper, 'close'):

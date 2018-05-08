@@ -258,32 +258,23 @@ def run(mapper,
             memlim = int(sys.argv[3])
             resource.setrlimit(resource.RLIMIT_AS, (memlim, memlim))
 
-        mrbase_class = loadclassname(os.environ['dumbo_mrbase_class'])
         jk_class = loadclassname(os.environ['dumbo_jk_class'])
         runinfo = loadclassname(os.environ['dumbo_runinfo_class'])()
 
         if iterarg == iter:
             if sys.argv[1].startswith('map'):
-                if type(mapper) in (types.ClassType, type):
-                    mappercls = type('DumboMapper', (mapper, mrbase_class), {})
-                    mapper = mappercls()
+                mapper = get_mapper(mapper)
                 if hasattr(mapper, 'configure'):
                     mapconf = mapper.configure
                 if hasattr(mapper, 'close'):
                     mapclose = mapper.close
-                if hasattr(mapper, 'map'):
-                    mapper = mapper.map
                 if hasattr(mapper, 'cleanup'):
                     mapcleanup = mapper.cleanup
-                if type(combiner) in (types.ClassType, type):
-                    combinercls = type('DumboCombiner', (combiner, mrbase_class), {})
-                    combiner = combinercls()
+                combiner = get_reducer(combiner, class_name='DumboCombiner')
                 if hasattr(combiner, 'configure'):
                     combconf = combiner.configure
                 if hasattr(combiner, 'close'):
                     combclose = combiner.close
-                if hasattr(combiner, 'reduce'):
-                    combiner = combiner.reduce
                 if hasattr(combiner, 'cleanup'):
                     combcleanup = combiner.cleanup
                 try:
@@ -364,15 +355,11 @@ def run(mapper,
 
             elif reducer:
                 # Reducer
-                if type(reducer) in (types.ClassType, type):
-                    reducercls = type('DumboReducer', (reducer, mrbase_class), {})
-                    reducer = reducercls()
+                reducer = get_reducer(reducer)
                 if hasattr(reducer, 'configure'):
                     redconf = reducer.configure
                 if hasattr(reducer, 'close'):
                     redclose = reducer.close
-                if hasattr(reducer, 'reduce'):
-                    reducer = reducer.reduce
                 if hasattr(reducer, 'cleanup'):
                     redcleanup = reducer.cleanup
                 if os.environ.has_key('stream_reduce_input') and \
@@ -467,6 +454,28 @@ def run(mapper,
             print >> sys.stderr, 'ERROR: Are you sure that "python" is on your path?'
         if retval != 0:
             sys.exit(retval)
+
+
+def get_mapper(mapper, class_name='DumboMapper'):
+    """Helper to get a mapper: instantiate Mapper class or get .map property"""
+    if type(mapper) in (types.ClassType, type):
+        mrbase_class = loadclassname(os.environ['dumbo_mrbase_class'])
+        mappercls = type(class_name, (mapper, mrbase_class), {})
+        mapper = mappercls()
+    if hasattr(mapper, 'map'):
+        mapper = mapper.map
+    return mapper
+
+
+def get_reducer(reducer, class_name='DumboReducer'):
+    """Helper to get a reducer: instantiate Reducer class or get .reduce property"""
+    if type(reducer) in (types.ClassType, type):
+        mrbase_class = loadclassname(os.environ['dumbo_mrbase_class'])
+        reducercls = type(class_name, (reducer, mrbase_class), {})
+        reducer = reducercls()
+    if hasattr(reducer, 'reduce'):
+        reducer = reducer.reduce
+    return reducer
 
 
 def valwrapper(data, valfunc):
